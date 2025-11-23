@@ -10,7 +10,8 @@ import { postValidation } from "../posts/validation";
 export const blogsRouter = express.Router();
 
 blogsRouter.get("/:blogId/posts", async (req, res) => {
-  const blog = await BlogModel.findById(req.params.blogId);
+  const blogId = req.params.blogId;
+  const blog = await BlogModel.findById(blogId);
 
   if (!blog)
     return res.status(HttpResponses.NOT_FOUND).send({
@@ -27,7 +28,7 @@ blogsRouter.get("/:blogId/posts", async (req, res) => {
   pageSize = +pageSize;
   pageNumber = +pageNumber;
 
-  const posts = await PostModel.find({ blog }).sort({
+  const posts = await PostModel.find({ blogId }).sort({
     createdAt: sortDirection === "asc" ? "asc" : "desc",
   });
 
