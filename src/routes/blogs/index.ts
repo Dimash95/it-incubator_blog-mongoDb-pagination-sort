@@ -28,8 +28,10 @@ blogsRouter.get("/:blogId/posts", async (req, res) => {
   pageSize = +pageSize;
   pageNumber = +pageNumber;
 
+  const sortCreatedAt = () => (sortDirection === "asc" ? "asc" : "desc");
+
   const posts = await PostModel.find({ blogId }).sort({
-    createdAt: sortDirection === "asc" ? "asc" : "desc",
+    createdAt: sortCreatedAt(),
   });
 
   const totalCount = posts.length;
@@ -78,9 +80,11 @@ blogsRouter.get("/", async (req: Request, res: Response) => {
   pageSize = +pageSize;
   pageNumber = +pageNumber;
 
+  const sortCreatedAt = () => (sortDirection === "asc" ? "asc" : "desc");
+
   const blogs = await BlogModel.find({
     name: { $regex: searchNameTerm, $options: "i" },
-  }).sort({ createdAt: sortDirection === "asc" ? "asc" : "desc" });
+  }).sort({ createdAt: sortCreatedAt() });
 
   const totalCount = blogs.length;
   const pagesCount = Math.ceil(totalCount / pageSize);

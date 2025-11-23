@@ -5,11 +5,7 @@ const PostSchema = new mongoose.Schema(
     title: { type: String, required: true, maxlength: 30 },
     shortDescription: { type: String, required: true, maxlength: 100 },
     content: { type: String, required: true, maxlength: 1000 },
-    blogId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Blog",
-      required: false,
-    },
+    blogId: { type: String, required: false },
     createdAt: { type: String, default: () => new Date().toISOString() },
     blogName: { type: String, required: true },
   },

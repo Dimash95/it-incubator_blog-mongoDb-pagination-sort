@@ -30,8 +30,10 @@ postsRouter.get("/", async (req: Request, res: Response) => {
   pageSize = +pageSize;
   pageNumber = +pageNumber;
 
+  const sortCreatedAt = () => (sortDirection === "asc" ? "asc" : "desc");
+
   const posts = await PostModel.find().sort({
-    createdAt: sortDirection === "asc" ? "asc" : "desc",
+    createdAt: sortCreatedAt(),
   });
 
   const totalCount = posts.length;
