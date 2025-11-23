@@ -8,7 +8,7 @@ const PostSchema = new mongoose.Schema(
     blogId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Blog",
-      required: true,
+      required: false,
     },
     createdAt: { type: String, default: () => new Date().toISOString() },
     blogName: { type: String, required: true },

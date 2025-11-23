@@ -28,10 +28,10 @@ export const postValidation = [
     .isLength({ max: 1000 })
     .withMessage("Content must be ≤ 1000 characters"),
 
-  body("blogId")
-    .trim()
-    .isString()
-    .withMessage("BlogId must be a string")
-    .notEmpty()
-    .withMessage("BlogId is required"),
+  // body("blogId")
+  //   .trim()
+  //   .isString()
+  //   .withMessage("BlogId must be a string")
+  //   .notEmpty()
+  //   .withMessage("BlogId is required"),
 ];

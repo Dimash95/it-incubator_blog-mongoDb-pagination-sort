@@ -4,8 +4,51 @@ import { basicAuth } from "../../middlewares/auth";
 import { createBlogValidation } from "./validation";
 import { inputValidation } from "../../middlewares/input-validation";
 import { HttpResponses } from "../../const";
+import { PostModel } from "../posts/model";
+import { postValidation } from "../posts/validation";
 
 export const blogsRouter = express.Router();
+
+blogsRouter.get("/:blogId/posts", async (req, res) => {
+  const blog = await BlogModel.findById(req.params.blogId);
+
+  if (!blog)
+    return res.status(HttpResponses.NOT_FOUND).send({
+      errorsMessages: [
+        {
+          message: "Blog not found",
+          field: "id",
+        },
+      ],
+    });
+
+  let { sortDirection = "asc", pageNumber = 1, pageSize = 10 } = req.query;
+
+  pageSize = +pageSize;
+  pageNumber = +pageNumber;
+
+  const posts = await PostModel.find({ blog }).sort({
+    createdAt: sortDirection === "asc" ? "asc" : "desc",
+  });
+
+  const totalCount = posts.length;
+  const pagesCount = Math.ceil(totalCount / pageSize);
+
+  const filteredPosts = posts.slice(
+    (pageNumber - 1) * pageSize,
+    (pageNumber - 1) * pageSize + pageSize
+  );
+
+  const result = {
+    pagesCount,
+    page: pageNumber,
+    pageSize,
+    totalCount,
+    items: filteredPosts,
+  };
+
+  return res.status(HttpResponses.OK).send(result);
+});
 
 blogsRouter.get("/:id", async (req, res) => {
   const blog = await BlogModel.findById(req.params.id);
@@ -56,6 +99,43 @@ blogsRouter.get("/", async (req: Request, res: Response) => {
 
   res.status(HttpResponses.OK).send(result);
 });
+
+blogsRouter.post(
+  "/:blogId/posts",
+  basicAuth,
+  postValidation,
+  inputValidation,
+  async (req: Request, res: Response) => {
+    const { blogId } = req.params;
+
+    const blog = await BlogModel.findById(blogId);
+    console.log(blogId);
+    console.log(blog);
+
+    if (!blog) {
+      return res.status(HttpResponses.NOT_FOUND).send({
+        errorsMessages: [
+          {
+            message: "Blog not found",
+            field: "id",
+          },
+        ],
+      });
+    }
+
+    const { title, shortDescription, content } = req.body;
+
+    const newPost = await PostModel.create({
+      title,
+      shortDescription,
+      content,
+      blogId,
+      blogName: blog.name,
+    });
+
+    return res.status(HttpResponses.CREATED).send(newPost);
+  }
+);
 
 blogsRouter.post(
   "/",
