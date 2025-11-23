@@ -72,6 +72,7 @@ blogsRouter.get("/:id", async (req, res) => {
 blogsRouter.get("/", async (req: Request, res: Response) => {
   let {
     searchNameTerm = "",
+    sortBy = "createdAt",
     sortDirection = "desc",
     pageNumber = 1,
     pageSize = 10,
@@ -84,7 +85,7 @@ blogsRouter.get("/", async (req: Request, res: Response) => {
 
   const blogs = await BlogModel.find({
     name: { $regex: searchNameTerm, $options: "i" },
-  }).sort({ createdAt: sortCreatedAt() });
+  }).sort({ [`${sortBy}`]: sortCreatedAt() });
 
   const totalCount = blogs.length;
   const pagesCount = Math.ceil(totalCount / pageSize);
