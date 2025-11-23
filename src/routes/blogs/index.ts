@@ -24,16 +24,19 @@ blogsRouter.get("/:id", async (req, res) => {
 });
 
 blogsRouter.get("/", async (req: Request, res: Response) => {
-  let { searchNameTerm = "", pageNumber = 1, pageSize = 10 } = req.query;
+  let {
+    searchNameTerm = "",
+    sortDirection = "asc",
+    pageNumber = 1,
+    pageSize = 10,
+  } = req.query;
 
   pageSize = +pageSize;
   pageNumber = +pageNumber;
 
-  console.log(searchNameTerm);
-
   const blogs = await BlogModel.find({
     name: { $regex: searchNameTerm, $options: "i" },
-  });
+  }).sort({ createdAt: sortDirection === "asc" ? "asc" : "desc" });
 
   const totalCount = blogs.length;
   const pagesCount = Math.ceil(totalCount / pageSize);

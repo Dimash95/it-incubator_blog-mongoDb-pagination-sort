@@ -25,12 +25,14 @@ postsRouter.get("/:id", async (req: Request, res: Response) => {
 });
 
 postsRouter.get("/", async (req: Request, res: Response) => {
-  let { pageNumber = 1, pageSize = 10 } = req.query;
+  let { sortDirection = "asc", pageNumber = 1, pageSize = 10 } = req.query;
 
   pageSize = +pageSize;
   pageNumber = +pageNumber;
 
-  const posts = await PostModel.find();
+  const posts = await PostModel.find().sort({
+    createdAt: sortDirection === "asc" ? "asc" : "desc",
+  });
 
   const totalCount = posts.length;
   const pagesCount = Math.ceil(totalCount / pageSize);
