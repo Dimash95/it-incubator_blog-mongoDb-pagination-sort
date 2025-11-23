@@ -24,12 +24,16 @@ blogsRouter.get("/:id", async (req, res) => {
 });
 
 blogsRouter.get("/", async (req: Request, res: Response) => {
-  let { pageNumber = 1, pageSize = 10 } = req.query;
+  let { searchNameTerm = "", pageNumber = 1, pageSize = 10 } = req.query;
 
   pageSize = +pageSize;
   pageNumber = +pageNumber;
 
-  const blogs = await BlogModel.find();
+  console.log(searchNameTerm);
+
+  const blogs = await BlogModel.find({
+    name: { $regex: searchNameTerm, $options: "i" },
+  });
 
   const totalCount = blogs.length;
   const pagesCount = Math.ceil(totalCount / pageSize);
