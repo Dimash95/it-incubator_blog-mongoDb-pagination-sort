@@ -23,7 +23,7 @@ blogsRouter.get("/:blogId/posts", async (req, res) => {
       ],
     });
 
-  let { sortDirection = "asc", pageNumber = 1, pageSize = 10 } = req.query;
+  let { sortDirection = "desc", pageNumber = 1, pageSize = 10 } = req.query;
 
   pageSize = +pageSize;
   pageNumber = +pageNumber;
@@ -70,7 +70,7 @@ blogsRouter.get("/:id", async (req, res) => {
 blogsRouter.get("/", async (req: Request, res: Response) => {
   let {
     searchNameTerm = "",
-    sortDirection = "asc",
+    sortDirection = "desc",
     pageNumber = 1,
     pageSize = 10,
   } = req.query;

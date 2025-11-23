@@ -25,7 +25,7 @@ postsRouter.get("/:id", async (req: Request, res: Response) => {
 });
 
 postsRouter.get("/", async (req: Request, res: Response) => {
-  let { sortDirection = "asc", pageNumber = 1, pageSize = 10 } = req.query;
+  let { sortDirection = "desc", pageNumber = 1, pageSize = 10 } = req.query;
 
   pageSize = +pageSize;
   pageNumber = +pageNumber;
