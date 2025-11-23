@@ -23,13 +23,14 @@ blogsRouter.get("/:id", async (req, res) => {
   return res.status(HttpResponses.OK).send(blog);
 });
 
-blogsRouter.get("/", async (req: Request, res) => {
+blogsRouter.get("/", async (req: Request, res: Response) => {
   let { pageNumber = 1, pageSize = 10 } = req.query;
 
   pageSize = +pageSize;
   pageNumber = +pageNumber;
 
   const blogs = await BlogModel.find();
+
   const totalCount = blogs.length;
   const pagesCount = Math.ceil(totalCount / pageSize);
 

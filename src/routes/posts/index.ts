@@ -24,9 +24,31 @@ postsRouter.get("/:id", async (req: Request, res: Response) => {
   return res.status(HttpResponses.OK).send(post);
 });
 
-postsRouter.get("/", async (req, res) => {
+postsRouter.get("/", async (req: Request, res: Response) => {
+  let { pageNumber = 1, pageSize = 10 } = req.query;
+
+  pageSize = +pageSize;
+  pageNumber = +pageNumber;
+
   const posts = await PostModel.find();
-  res.status(HttpResponses.OK).send(posts);
+
+  const totalCount = posts.length;
+  const pagesCount = Math.ceil(totalCount / pageSize);
+
+  const filteredPosts = posts.slice(
+    (pageNumber - 1) * pageSize,
+    (pageNumber - 1) * pageSize + pageSize
+  );
+
+  const result = {
+    pagesCount,
+    page: pageNumber,
+    pageSize,
+    totalCount,
+    items: filteredPosts,
+  };
+
+  res.status(HttpResponses.OK).send(result);
 });
 
 postsRouter.post(
